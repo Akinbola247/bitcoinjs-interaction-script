@@ -55,6 +55,9 @@ function Spend(preImageHex) {
         Buffer.from(preImageHex, 'hex') 
     ]);
     
+    //to do : needs a fix {akinbola247}
+    const redeemScript = bitcoin.script.compile([Buffer.from('a9483fd03b2e8a2a7a6430f708c5a8501e82d36063b3a6a5224f2f058a85a7c482f13f2d801', 'hex')]);
+    
     const outputNumber = 0;
     const txid = '0c091221f0d09290d8e03bd35303a89231377fdde19b61851f06cdab1d43a810';
     const amount = 0.00090502;
@@ -96,6 +99,20 @@ function Spend(preImageHex) {
     const rawTransaction = psbt.extractTransaction().toHex();
 
     console.log('Transaction Hex:', rawTransaction);
+    broadcast(rawTransaction)
+}
+
+async function broadcast(signedTransactionHex) {
+    const esploraUrl = 'https://blockstream.info/testnet/api/tx';
+
+    // Broadcast the transaction
+    axios.post(esploraUrl, signedTransactionHex)
+      .then(response => {
+        console.log('Transaction Broadcasted!');
+      })
+      .catch(error => {
+        console.error('Error Broadcasting Transaction:', error);
+      });
 }
 
 
